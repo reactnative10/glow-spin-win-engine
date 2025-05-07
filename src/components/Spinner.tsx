@@ -30,6 +30,8 @@ const Spinner: React.FC<SpinnerProps> = ({
 
   // Generate more items to ensure we have at least 120
   const generateMoreItems = (baseItems: Item[]): Item[] => {
+    if (!baseItems.length) return [];
+    
     const result: Item[] = [];
     const numberOfSets = Math.ceil(120 / baseItems.length);
     
@@ -48,25 +50,28 @@ const Spinner: React.FC<SpinnerProps> = ({
   const extendedItems = generateMoreItems(items);
   
   const calculateSpinToWinningItem = () => {
-    if (!winningItemId) return { duration: 0, targetIndex: 0 };
+    if (!winningItemId) {
+      // If no winning item specified, choose a random one
+      const randomIndex = Math.floor(Math.random() * items.length);
+      return { duration: 5, targetIndex: (2 * extendedItems.length) + randomIndex };
+    }
     
     // Find the original winning item index
     const originalWinningIndex = items.findIndex(item => item.id === winningItemId);
     if (originalWinningIndex === -1) {
       console.error('Winning item not found in items list');
-      return { duration: 0, targetIndex: 0 };
+      return { duration: 5, targetIndex: Math.floor(Math.random() * extendedItems.length) };
     }
     
     // Calculate how many full rotations we want (at least 2)
     const fullRotations = 2;
-    const totalItems = extendedItems.length;
+    const totalItems = items.length;
     
     // Calculate the total number of items to spin through
     // This includes the full rotations plus the items needed to reach the winning item
     const targetIndex = (fullRotations * totalItems) + originalWinningIndex;
     
     // Calculate duration based on item count (more items = longer spin)
-    // This gives a nice acceleration and deceleration feel
     const baseDuration = 4; // base duration in seconds
     const duration = baseDuration + (fullRotations * 0.5);
     
@@ -93,10 +98,12 @@ const Spinner: React.FC<SpinnerProps> = ({
     // Track active item during spinning
     let currentItem = 0;
     const trackActiveItem = setInterval(() => {
-      const containerRect = spinnerRef.current?.getBoundingClientRect();
+      if (!spinnerRef.current) return;
+      
+      const containerRect = spinnerRef.current.getBoundingClientRect();
       if (containerRect) {
         const centerY = containerRect.top + (containerRect.height / 2);
-        const elements = spinnerRef.current?.children || [];
+        const elements = Array.from(spinnerRef.current.children);
         
         for (let i = 0; i < elements.length; i++) {
           const element = elements[i] as HTMLElement;
@@ -116,10 +123,10 @@ const Spinner: React.FC<SpinnerProps> = ({
     // Handle spin completion
     setTimeout(() => {
       clearInterval(trackActiveItem);
-      setIsSpinning(false);
       
       // Find the winning item that landed on the center
-      const winningItem = extendedItems[currentItem % extendedItems.length];
+      const winningItemIndex = currentItem % items.length;
+      const winningItem = items[winningItemIndex];
       
       // Call the onSpinComplete callback with the winning item
       if (onSpinComplete && winningItem) {
@@ -131,6 +138,12 @@ const Spinner: React.FC<SpinnerProps> = ({
         title: "Congratulations!",
         description: `You won: ${winningItem?.name || 'a prize'}!`,
       });
+      
+      // Delay resetting the isSpinning state to allow for animations to complete
+      setTimeout(() => {
+        setIsSpinning(false);
+      }, 500);
+      
     }, duration * 1000);
   };
   
@@ -153,13 +166,12 @@ const Spinner: React.FC<SpinnerProps> = ({
   return (
     <div className="flex flex-col items-center justify-center gap-8 w-full max-w-md mx-auto">
       {/* Spinner container */}
-      <div className="relative w-full h-[270px] overflow-hidden border-4 border-gray-800 rounded-lg bg-gray-900 shadow-lg">
+      <div className="relative w-full h-[170px] overflow-hidden border-2 border-gray-700 rounded-lg bg-gray-900 shadow-[0_0_15px_rgba(0,0,0,0.5)]">
         {/* Center indicator line */}
         <div className="absolute top-1/2 left-0 w-full h-1 bg-spinner-red z-20 transform -translate-y-1/2 shadow-[0_0_10px_rgba(234,56,76,0.7)]" />
         
-        {/* Glass effect overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-transparent z-10 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent z-10 pointer-events-none" />
+        {/* Glow effects */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/50 z-10 pointer-events-none" />
         
         {/* Spinner items */}
         <div 
@@ -182,7 +194,7 @@ const Spinner: React.FC<SpinnerProps> = ({
       
       {/* Spin button */}
       <Button 
-        className="px-8 py-6 text-xl font-bold bg-spinner-blue hover:bg-spinner-skyBlue transition-all duration-300 disabled:opacity-50"
+        className="px-8 py-6 text-xl font-bold bg-spinner-blue hover:bg-spinner-skyBlue transition-all duration-300 disabled:opacity-50 rounded-full shadow-lg"
         onClick={startSpin} 
         disabled={isSpinning}
       >

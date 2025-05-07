@@ -6,13 +6,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 const generateSampleItems = () => {
-  const items = [];
-  for (let i = 1; i <= 40; i++) {
-    items.push({
-      id: `item-${i}`,
-      name: `Prize ${i}`
-    });
-  }
+  const items = [
+    { id: 'item-1', name: 'White Shoes' },
+    { id: 'item-2', name: 'Jacket' },
+    { id: 'item-3', name: 'Hat' },
+    { id: 'item-4', name: '$1 Coupon' },
+    { id: 'item-5', name: '$5 Coupon' },
+    { id: 'item-6', name: '$10 Coupon' },
+    { id: 'item-7', name: '$25 Coupon' },
+    { id: 'item-8', name: 'Bottle' }
+  ];
   return items;
 };
 
@@ -31,7 +34,7 @@ const SpinnerDemo: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center w-full max-w-xl mx-auto p-6 bg-gray-800 rounded-xl shadow-2xl">
+    <div className="flex flex-col items-center w-full max-w-xl mx-auto p-6 bg-gray-900 rounded-xl shadow-2xl">
       <h1 className="text-3xl font-bold mb-8 text-white">Prize Spinner</h1>
       
       <div className="w-full mb-8">
@@ -40,7 +43,7 @@ const SpinnerDemo: React.FC = () => {
           id="winningItem"
           value={winningItemId}
           onChange={handleWinningItemChange}
-          className="w-full bg-gray-700 text-white p-2 rounded-md border border-gray-600 focus:ring-2 focus:ring-spinner-blue focus:border-transparent"
+          className="w-full bg-gray-800 text-white p-2 rounded-md border border-gray-700 focus:ring-2 focus:ring-spinner-blue focus:border-transparent"
         >
           {sampleItems.map((item) => (
             <option key={item.id} value={item.id}>
@@ -57,15 +60,14 @@ const SpinnerDemo: React.FC = () => {
       />
       
       {lastWinner && (
-        <div className="mt-8 p-4 bg-gray-700 rounded-lg text-white">
-          <h2 className="text-xl font-semibold">Last Winner:</h2>
-          <p className="text-spinner-skyBlue">{lastWinner.name}</p>
+        <div className="mt-8 p-4 bg-gray-800 rounded-lg text-white border border-gray-700">
+          <h2 className="text-xl font-semibold">You Won:</h2>
+          <p className="text-spinner-skyBlue text-2xl">{lastWinner.name}</p>
         </div>
       )}
       
       <p className="text-gray-400 text-sm mt-8 text-center">
         The spinner will always land on your selected prize after at least 2 full rotations.
-        <br />Each item will glow as it passes through the center line.
       </p>
     </div>
   );

@@ -29,7 +29,7 @@ const SpinnerItem: React.FC<SpinnerItemProps> = ({ id, name, isActive, index }) 
       className={cn(
         "flex items-center justify-center py-3 px-4 w-full text-white font-medium transition-all duration-300",
         bgColor,
-        isActive && "animate-glow z-10"
+        isActive && "animate-glow z-10 scale-110"
       )}
       data-id={id}
     >
