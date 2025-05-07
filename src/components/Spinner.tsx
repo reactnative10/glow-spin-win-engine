@@ -49,6 +49,7 @@ const Spinner: React.FC<SpinnerProps> = ({
   
   const extendedItems = generateMoreItems(items);
   
+  // Improved calculation to ensure the winning item lands at the center red line
   const calculateSpinToWinningItem = () => {
     if (!winningItemId) {
       // If no winning item specified, choose a random one
@@ -56,7 +57,7 @@ const Spinner: React.FC<SpinnerProps> = ({
       return { duration: 5, targetIndex: (2 * items.length) + randomIndex };
     }
     
-    // Find the original winning item index - this needs to be fixed
+    // Find the original winning item index
     const originalWinningIndex = items.findIndex(item => item.id === winningItemId);
     if (originalWinningIndex === -1) {
       console.error('Winning item not found in items list');
@@ -67,9 +68,9 @@ const Spinner: React.FC<SpinnerProps> = ({
     const fullRotations = 2;
     const totalItems = items.length;
     
-    // Calculate the target index more precisely to ensure we land on the right item
-    // Add buffer items to ensure we have enough items to spin through
-    const targetIndex = (fullRotations * totalItems) + originalWinningIndex;
+    // Calculate the target position - this ensures the item will be centered
+    const initialOffset = 1; // Position items properly at the center
+    const targetIndex = (fullRotations * totalItems) + originalWinningIndex + initialOffset;
     
     // Calculate duration based on item count (more items = longer spin)
     const baseDuration = 4; // base duration in seconds
