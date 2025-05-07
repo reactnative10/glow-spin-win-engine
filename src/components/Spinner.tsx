@@ -53,27 +53,29 @@ const Spinner: React.FC<SpinnerProps> = ({
     if (!winningItemId) {
       // If no winning item specified, choose a random one
       const randomIndex = Math.floor(Math.random() * items.length);
-      return { duration: 5, targetIndex: (2 * extendedItems.length) + randomIndex };
+      return { duration: 5, targetIndex: (2 * items.length) + randomIndex };
     }
     
-    // Find the original winning item index
+    // Find the original winning item index - this needs to be fixed
     const originalWinningIndex = items.findIndex(item => item.id === winningItemId);
     if (originalWinningIndex === -1) {
       console.error('Winning item not found in items list');
-      return { duration: 5, targetIndex: Math.floor(Math.random() * extendedItems.length) };
+      return { duration: 5, targetIndex: Math.floor(Math.random() * items.length) };
     }
     
     // Calculate how many full rotations we want (at least 2)
     const fullRotations = 2;
     const totalItems = items.length;
     
-    // Calculate the total number of items to spin through
-    // This includes the full rotations plus the items needed to reach the winning item
+    // Calculate the target index more precisely to ensure we land on the right item
+    // Add buffer items to ensure we have enough items to spin through
     const targetIndex = (fullRotations * totalItems) + originalWinningIndex;
     
     // Calculate duration based on item count (more items = longer spin)
     const baseDuration = 4; // base duration in seconds
     const duration = baseDuration + (fullRotations * 0.5);
+    
+    console.log(`Calculated target: ${targetIndex}, winning index: ${originalWinningIndex}, winningID: ${winningItemId}`);
     
     return { duration, targetIndex };
   };
@@ -95,9 +97,32 @@ const Spinner: React.FC<SpinnerProps> = ({
       transition: `transform ${duration}s cubic-bezier(0.1, 0.7, 0.1, 1)`
     });
     
+    // Find the winning item based on winningItemId
+    const winningItem = items.find(item => item.id === winningItemId) || items[0];
+    
+    // Handle spin completion
+    setTimeout(() => {
+      // Call the onSpinComplete callback with the winning item
+      if (onSpinComplete && winningItem) {
+        onSpinComplete(winningItem);
+      }
+      
+      // Show a toast notification
+      toast({
+        title: "Congratulations!",
+        description: `You won: ${winningItem?.name || 'a prize'}!`,
+      });
+      
+      // Delay resetting the isSpinning state to allow for animations to complete
+      setTimeout(() => {
+        setIsSpinning(false);
+        setActiveItemIndex(-1);
+      }, 500);
+      
+    }, duration * 1000);
+    
     // Track active item during spinning
-    let currentItem = 0;
-    const trackActiveItem = setInterval(() => {
+    const trackActiveItemInterval = setInterval(() => {
       if (!spinnerRef.current) return;
       
       const containerRect = spinnerRef.current.getBoundingClientRect();
@@ -113,37 +138,15 @@ const Spinner: React.FC<SpinnerProps> = ({
           // Check if this item is crossing the center line
           if (Math.abs(itemCenterY - centerY) < 10) {
             setActiveItemIndex(i);
-            currentItem = i;
             break;
           }
         }
       }
     }, 50);
     
-    // Handle spin completion
+    // Clear the interval when spinning is complete
     setTimeout(() => {
-      clearInterval(trackActiveItem);
-      
-      // Find the winning item that landed on the center
-      const winningItemIndex = currentItem % items.length;
-      const winningItem = items[winningItemIndex];
-      
-      // Call the onSpinComplete callback with the winning item
-      if (onSpinComplete && winningItem) {
-        onSpinComplete(winningItem);
-      }
-      
-      // Show a toast notification
-      toast({
-        title: "Congratulations!",
-        description: `You won: ${winningItem?.name || 'a prize'}!`,
-      });
-      
-      // Delay resetting the isSpinning state to allow for animations to complete
-      setTimeout(() => {
-        setIsSpinning(false);
-      }, 500);
-      
+      clearInterval(trackActiveItemInterval);
     }, duration * 1000);
   };
   
@@ -156,7 +159,6 @@ const Spinner: React.FC<SpinnerProps> = ({
           transform: 'translateY(0)',
           transition: 'none'
         });
-        setActiveItemIndex(-1);
       }, 1000);
       
       return () => clearTimeout(timer);
@@ -179,7 +181,6 @@ const Spinner: React.FC<SpinnerProps> = ({
           className="absolute top-0 left-0 w-full transition-transform"
           style={spinnerStyle}
         >
-          {/* Buffer items at the top for continuous looping effect */}
           {extendedItems.map((item, index) => (
             <SpinnerItem
               key={`${item.id}-${index}`}
