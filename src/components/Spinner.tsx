@@ -49,7 +49,7 @@ const Spinner: React.FC<SpinnerProps> = ({
   
   const extendedItems = generateMoreItems(items);
   
-  // Improved calculation to ensure the winning item lands at the center red line
+  // Calculate the position to ensure the winning item lands exactly at the center red line
   const calculateSpinToWinningItem = () => {
     if (!winningItemId) {
       // If no winning item specified, choose a random one
@@ -68,8 +68,9 @@ const Spinner: React.FC<SpinnerProps> = ({
     const fullRotations = 2;
     const totalItems = items.length;
     
-    // Calculate the target position - this ensures the item will be centered
-    const initialOffset = 1; // Position items properly at the center
+    // The key adjustment: offset by 2 to ensure the item centers under the red line
+    // This positions the item properly at the center line
+    const initialOffset = 2; 
     const targetIndex = (fullRotations * totalItems) + originalWinningIndex + initialOffset;
     
     // Calculate duration based on item count (more items = longer spin)
