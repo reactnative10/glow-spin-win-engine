@@ -53,7 +53,7 @@ const Spinner: React.FC<SpinnerProps> = ({
   const calculateSpinToWinningItem = () => {
     const baseItemCount = items.length;
     const fullRotations = 2;
-    const visibleAreaHeight = 170; // Height of the spinner window
+    const visibleAreaHeight = 200; // Height of the spinner window
     const centerOffset = Math.floor(visibleAreaHeight / (2 * ITEM_HEIGHT)); // Number of items from top to center line
   
     if (!winningItemId) {
