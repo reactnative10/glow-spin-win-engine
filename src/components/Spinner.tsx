@@ -70,7 +70,7 @@ const Spinner: React.FC<SpinnerProps> = ({
     
     // Fine-tuned offset to ensure the selected item lands centered under the red line
     // The exact center position depends on the container and item height
-    const initialOffset = 4; 
+    const initialOffset = 3.8; 
     const targetIndex = (fullRotations * totalItems) + originalWinningIndex + initialOffset;
     
     // Calculate duration based on item count (more items = longer spin)
