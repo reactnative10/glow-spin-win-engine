@@ -1,6 +1,5 @@
-
 import React, { useState, useRef, useEffect } from 'react';
-import PrizeItem from './SpinnerItem';
+import PrizeItem from './PrizeItem';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 

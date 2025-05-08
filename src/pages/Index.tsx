@@ -1,6 +1,6 @@
 
 import React from 'react';
-import PrizeSelector from '@/components/SpinnerDemo';
+import PrizeSelector from '@/components/PrizeSelector';
 
 const HomePage = () => {
   return (
