@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import SpinnerItem from './SpinnerItem';
+import PrizeItem from './SpinnerItem';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -9,13 +9,13 @@ interface Item {
   name: string;
 }
 
-interface SpinnerProps {
+interface PrizeWheelProps {
   items: Item[];
   winningItemId?: string;
   onSpinComplete?: (item: Item) => void;
 }
 
-const Spinner: React.FC<SpinnerProps> = ({ 
+const PrizeWheel: React.FC<PrizeWheelProps> = ({ 
   items, 
   winningItemId,
   onSpinComplete 
@@ -184,7 +184,7 @@ const Spinner: React.FC<SpinnerProps> = ({
           style={spinnerStyle}
         >
           {extendedItems.map((item, index) => (
-            <SpinnerItem
+            <PrizeItem
               key={`${item.id}-${index}`}
               id={item.id}
               name={item.name}
@@ -207,4 +207,4 @@ const Spinner: React.FC<SpinnerProps> = ({
   );
 };
 
-export default Spinner;
+export default PrizeWheel;

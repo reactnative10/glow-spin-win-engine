@@ -2,7 +2,7 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 
-interface SpinnerItemProps {
+interface PrizeItemProps {
   id: string;
   name: string;
   isActive: boolean;
@@ -21,7 +21,7 @@ const getRandomColor = (index: number) => {
   return colors[index % colors.length];
 };
 
-const SpinnerItem: React.FC<SpinnerItemProps> = ({ id, name, isActive, index }) => {
+const PrizeItem: React.FC<PrizeItemProps> = ({ id, name, isActive, index }) => {
   const bgColor = getRandomColor(index);
   
   return (
@@ -38,4 +38,4 @@ const SpinnerItem: React.FC<SpinnerItemProps> = ({ id, name, isActive, index }) 
   );
 };
 
-export default SpinnerItem;
+export default PrizeItem;

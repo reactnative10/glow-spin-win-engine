@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import Spinner from './Spinner';
+import PrizeWheel from './Spinner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -19,7 +19,7 @@ const generateSampleItems = () => {
   return items;
 };
 
-const SpinnerDemo: React.FC = () => {
+const PrizeSelector: React.FC = () => {
   const sampleItems = generateSampleItems();
   const [winningItemId, setWinningItemId] = useState(sampleItems[0].id);
   const [lastWinner, setLastWinner] = useState<{ id: string; name: string } | null>(null);
@@ -53,7 +53,7 @@ const SpinnerDemo: React.FC = () => {
         </select>
       </div>
       
-      <Spinner 
+      <PrizeWheel 
         items={sampleItems}
         winningItemId={winningItemId}
         onSpinComplete={handleSpinComplete}
@@ -73,4 +73,4 @@ const SpinnerDemo: React.FC = () => {
   );
 };
 
-export default SpinnerDemo;
+export default PrizeSelector;
