@@ -75,7 +75,7 @@ const Spinner: React.FC<SpinnerProps> = ({
     
     // Calculate duration based on item count (more items = longer spin)
     const baseDuration = 4; // base duration in seconds
-    const duration = baseDuration + (fullRotations * 0.8);
+    const duration = baseDuration + (fullRotations * 1);
     
     console.log(`Calculated target: ${targetIndex}, winning index: ${originalWinningIndex}, winningID: ${winningItemId}`);
     
