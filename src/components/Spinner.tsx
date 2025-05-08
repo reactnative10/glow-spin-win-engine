@@ -51,34 +51,27 @@ const Spinner: React.FC<SpinnerProps> = ({
   
   // Improved calculation to ensure the winning item lands exactly under the red line
   const calculateSpinToWinningItem = () => {
+    const baseItemCount = items.length;
+    const fullRotations = 2;
+    const visibleAreaHeight = 170; // Height of the spinner window
+    const centerOffset = Math.floor(visibleAreaHeight / (2 * ITEM_HEIGHT)); // Number of items from top to center line
+  
     if (!winningItemId) {
-      // If no winning item specified, choose a random one
-      const randomIndex = Math.floor(Math.random() * items.length);
-      return { duration: 5, targetIndex: (2 * items.length) + randomIndex };
+      const randomIndex = Math.floor(Math.random() * baseItemCount);
+      return { duration: 5, targetIndex: (fullRotations * baseItemCount) + randomIndex };
     }
-    
-    // Find the original winning item index
+  
     const originalWinningIndex = items.findIndex(item => item.id === winningItemId);
     if (originalWinningIndex === -1) {
       console.error('Winning item not found in items list');
-      return { duration: 5, targetIndex: Math.floor(Math.random() * items.length) };
+      return { duration: 5, targetIndex: Math.floor(Math.random() * baseItemCount) };
     }
-    
-    // Calculate how many full rotations we want (at least 2)
-    const fullRotations = 2;
-    const totalItems = items.length;
-    
-    // Fine-tuned offset to ensure the selected item lands centered under the red line
-    // The exact center position depends on the container and item height
-    const initialOffset = 2.5; 
-    const targetIndex = (fullRotations * totalItems) + originalWinningIndex + initialOffset;
-    
-    // Calculate duration based on item count (more items = longer spin)
-    const baseDuration = 4; // base duration in seconds
-    const duration = baseDuration + (fullRotations * 1);
-    
-    console.log(`Calculated target: ${targetIndex}, winning index: ${originalWinningIndex}, winningID: ${winningItemId}`);
-    
+  
+    const totalItemsBeforeTarget = (fullRotations * baseItemCount) + originalWinningIndex;
+    const targetIndex = totalItemsBeforeTarget - centerOffset;
+  
+    const duration = 4 + (fullRotations * 0.5); // Customize spin duration if needed
+  
     return { duration, targetIndex };
   };
   
